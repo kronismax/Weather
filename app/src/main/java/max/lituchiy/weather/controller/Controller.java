@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import max.lituchiy.weather.model.api.WeatherManager;
+import max.lituchiy.weather.model.pojo.FirstDayForecast;
 import max.lituchiy.weather.model.pojo.Forecast;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -39,6 +40,31 @@ public class Controller {
                     JSONObject channel = results.getJSONObject("channel");
                     JSONObject item = channel.getJSONObject("item");
 
+                    String city = channel.getJSONObject("location").getString("city");
+                    String code = item.getJSONObject("condition").getString("code");
+                    String temperature = item.getJSONObject("condition").getString("temp");
+                    String chill = channel.getJSONObject("wind").getString("chill");
+                    String speed = channel.getJSONObject("wind").getString("speed");
+                    String direction = channel.getJSONObject("wind").getString("direction");
+                    String pressure = channel.getJSONObject("atmosphere").getString("pressure");
+                    String humidity = channel.getJSONObject("atmosphere").getString("humidity");
+                    String sunrise = channel.getJSONObject("astronomy").getString("sunrise");
+                    String sunset = channel.getJSONObject("astronomy").getString("sunset");
+                    String text = item.getJSONObject("condition").getString("text");
+
+                    FirstDayForecast firstDayForecast = new FirstDayForecast.Builder()
+                            .mCode(code)
+                            .mTemperature(temperature)
+                            .mCity(city)
+                            .windChill(chill)
+                            .windSpeed(speed)
+                            .windDirection(direction)
+                            .mPressure(pressure)
+                            .mHumidity(humidity)
+                            .mSunrise(sunrise)
+                            .mSunset(sunset)
+                            .mCloudy(text)
+                            .build();
                     JSONArray array = item.getJSONArray("forecast");
 
                     for (int i = 0; i < array.length(); i++) {
@@ -49,9 +75,10 @@ public class Controller {
                                 .setHigh(object.getString("high"))
                                 .setLow(object.getString("low"))
                                 .setText(object.getString("text"))
+                                .setCode(Integer.parseInt(object.getString("code")))
                                 .build();
 
-                        mListener.onFetchProgress(forecast);
+                        mListener.onFetchProgress(forecast, firstDayForecast);
 
                     }
 
@@ -74,9 +101,13 @@ public class Controller {
     public interface ForecastCallbackListener {
 
         void onFetchStart();
-        void onFetchProgress(Forecast forecast);
+
+        void onFetchProgress(Forecast forecast, FirstDayForecast firstDayForecast);
+
         void onFetchProgress(List<Forecast> forecastList);
+
         void onFetchComplete();
+
         void onFetchFailed();
     }
 }

@@ -15,8 +15,11 @@ import max.lituchiy.weather.model.pojo.Forecast;
 
 public class ForecastAdapter extends ArrayAdapter<Forecast> {
 
+    private final Context context;
+
     public ForecastAdapter(Context context, List<Forecast> objects) {
         super(context, R.layout.item_row, objects);
+        this.context = context;
     }
 
     @Override
@@ -34,10 +37,11 @@ public class ForecastAdapter extends ArrayAdapter<Forecast> {
 
         date.setText(forecast.mDate);
         day.setText(forecast.mDay);
-        high.setText(forecast.mHigh);
-        low.setText(forecast.mLow);
+        high.setText("High " + forecast.mHigh + "°C");
+        low.setText("Low " + forecast.mLow + "°C");
         text.setText(forecast.mText);
-        image.setImageDrawable(forecast.drawable);
+        int id = context.getResources().getIdentifier("drawable/icon_" + forecast.mCode, null, context.getPackageName());
+        image.setBackgroundResource(id);
         return customView;
     }
 

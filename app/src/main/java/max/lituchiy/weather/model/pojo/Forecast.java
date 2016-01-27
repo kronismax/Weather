@@ -1,14 +1,9 @@
 package max.lituchiy.weather.model.pojo;
 
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-
-import max.lituchiy.weather.R;
-
 public class Forecast {
 
     public String mDate, mDay, mHigh, mLow, mText;
-    public Drawable drawable = new BitmapDrawable(String.valueOf(R.drawable.a));
+    public int mCode;
 
     private Forecast(Builder builder) {
         mDate = builder.mDate;
@@ -16,39 +11,46 @@ public class Forecast {
         mHigh = builder.mHigh;
         mLow = builder.mLow;
         mText = builder.mText;
+        mCode = builder.mCode;
     }
 
     public static class Builder {
 
         private String mDate, mDay, mHigh, mLow, mText;
+        private int mCode;
 
         public Builder setDate(String mDate) {
             this.mDate = mDate;
-            return Builder.this;
+            return this;
         }
 
         public Builder setDay(String mDay) {
             this.mDay = mDay;
-            return Builder.this;
+            return this;
         }
 
         public Builder setHigh(String mHigh) {
             this.mHigh = mHigh;
-            return Builder.this;
+            return this;
         }
 
         public Builder setLow(String mLow) {
             this.mLow = mLow;
-            return Builder.this;
+            return this;
         }
 
         public Builder setText(String mText) {
             this.mText = mText;
-            return Builder.this;
+            return this;
+        }
+
+        public Builder setCode(int mCode) {
+            this.mCode = mCode;
+            return this;
         }
 
         public Forecast build() {
-            return new Forecast(Builder.this);
+            return new Forecast(this);
         }
 
     }

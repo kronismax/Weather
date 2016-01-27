@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 import max.lituchiy.weather.R;
 import max.lituchiy.weather.controller.Controller;
 import max.lituchiy.weather.model.adapter.ForecastAdapter;
+import max.lituchiy.weather.model.pojo.FirstDayForecast;
 import max.lituchiy.weather.model.pojo.Forecast;
 import max.lituchiy.weather.model.utilities.ExpandableHeightListView;
 
@@ -24,6 +27,18 @@ public class MainActivity extends AppCompatActivity implements Controller.Foreca
     private List<Forecast> mForecastList = new ArrayList<>();
     private ForecastAdapter mForecastAdapter;
     private Controller mController;
+
+    ImageView code;
+    private TextView temp;
+    private TextView city;
+    private TextView windChill;
+    private TextView windSpeed;
+    private TextView windDirection;
+    private TextView pressure;
+    private TextView humidity;
+    private TextView sunrise;
+    private TextView sunset;
+    private TextView text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements Controller.Foreca
 
         mForecastAdapter = new ForecastAdapter(this, mForecastList);
         mListView.setAdapter(mForecastAdapter);
-        mListView.setExpanded(true); //!
+        mListView.setExpanded(true);
+
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent),
                 getResources().getColor(R.color.colorPrimary),
                 getResources().getColor(R.color.colorPrimaryDark));
@@ -58,6 +74,36 @@ public class MainActivity extends AppCompatActivity implements Controller.Foreca
                 mController.startFetching();
             }
         });
+
+    }
+
+    private void configFirstDayViews(FirstDayForecast firstDayForecast) {
+        code = (ImageView) findViewById(R.id.forecastImage);
+        temp = (TextView) findViewById(R.id.temperatureTextView);
+        city = (TextView) findViewById(R.id.cityTextView);
+        windChill = (TextView) findViewById(R.id.windChillTextView);
+        windSpeed = (TextView) findViewById(R.id.windSpeedTextView);
+        windDirection = (TextView) findViewById(R.id.windDirectionTextView);
+        pressure = (TextView) findViewById(R.id.pressureTextView);
+        humidity = (TextView) findViewById(R.id.humidityTextView);
+        sunrise = (TextView) findViewById(R.id.sunriseTextView);
+        sunset = (TextView) findViewById(R.id.sunsetTextView);
+        text = (TextView) findViewById(R.id.textTextView);
+
+        int id = getResources().getIdentifier("drawable/icon_" + firstDayForecast.mCode, null, getPackageName());
+        code.setBackgroundResource(id);
+        temp.setText(firstDayForecast.mTemperature + "°C");
+
+        String[] string = firstDayForecast.mCity.split(" ");
+        city.setText(string[0]);
+        windChill.setText("Wind chill " + firstDayForecast.windChill + "°C");
+        windSpeed.setText("Wind speed " + firstDayForecast.windSpeed + " m/s");
+        windDirection.setText("Wind direction " + firstDayForecast.windDirection + "°");
+        pressure.setText("Pressure " + firstDayForecast.mPressure + " mmHg");
+        humidity.setText("Humidity " + firstDayForecast.mHumidity + "%");
+        sunrise.setText("Sunrise " + firstDayForecast.mSunrise);
+        sunset.setText("Sunset " + firstDayForecast.mSunset);
+        text.setText(firstDayForecast.mCloudy);
 
     }
 
@@ -90,9 +136,10 @@ public class MainActivity extends AppCompatActivity implements Controller.Foreca
     }
 
     @Override
-    public void onFetchProgress(Forecast forecast) {
+    public void onFetchProgress(Forecast forecast, FirstDayForecast firstDayForecast) {
         mForecastList.add(forecast);
         mForecastAdapter.notifyDataSetChanged();
+        configFirstDayViews(firstDayForecast);
     }
 
     @Override
