@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements Controller.Foreca
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mForecastList.clear();
                 mForecastAdapter = new ForecastAdapter(getApplicationContext(), mForecastList);
                 mController.startFetching();
             }
